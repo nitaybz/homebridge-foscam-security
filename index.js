@@ -158,7 +158,7 @@ FoscamPlatform.prototype.configureCamera = function (mac) {
   var newAccessory = new Accessory(name, uuid);
 
   // Add HomeKit Security System Service
-  newAccessory.addService(Service.SecuritySystem, name + " Motion Detection");
+  newAccessory.addService(Service.SecuritySystem, name + " Security");
 
   // Add HomeKit Motion Sensor Service
   newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
