@@ -1,4 +1,3 @@
-var FoscamAccessory = require("homebridge-foscam-stream").FoscamAccessory;
 var Foscam = require("foscam-client");
 var Accessory, Service, Characteristic, UUIDGen, hap;
 
@@ -9,7 +8,7 @@ module.exports = function (homebridge) {
   UUIDGen = homebridge.hap.uuid;
   hap = homebridge.hap;
 
-  homebridge.registerPlatform("homebridge-foscamcamera", "FoscamCamera", FoscamPlatform, true);
+  homebridge.registerPlatform("homebridge-foscamcamera", "FoscamSecurity", FoscamPlatform, true);
 }
 
 function FoscamPlatform(log, config, api) {
@@ -115,20 +114,10 @@ FoscamPlatform.prototype.getInfo = function (cameraConfig, callback) {
         thisCamera.triggerInterval = config.triggerInterval + 5;
       }
 
-      // Setup config for 2-way audio
-      thisCamera.speaker = {
-        "enabled": cameraConfig.spkrEnable !== false,
-        "compression": cameraConfig.spkrCompression !== false,
-        "gain": cameraConfig.spkrGain || 0
-      };
-
       // Remove unnecessary config
       delete thisCamera.stay;
       delete thisCamera.away;
       delete thisCamera.night;
-      delete thisCamera.spkrEnable;
-      delete thisCamera.spkrCompression;
-      delete thisCamera.spkrGain;
       delete thisCamera.motionDetector;
 
       // Store camera information
@@ -166,30 +155,25 @@ FoscamPlatform.prototype.configureCamera = function (mac) {
   this.log("Initializing platform accessory '" + name + "'...");
 
   // Setup for FoscamAccessory
-  var cameraSource = new FoscamAccessory(hap, thisCamera, this.log);
-  cameraSource.info().then(function () {
-    // Setup accessory as CAMERA (17) category
-    var newAccessory = new Accessory(name, uuid, 17);
-    newAccessory.configureCameraSource(cameraSource);
+  var newAccessory = new Accessory(name, uuid);
 
-    // Add HomeKit Security System Service
-    newAccessory.addService(Service.SecuritySystem, name + " Motion Detection");
+  // Add HomeKit Security System Service
+  newAccessory.addService(Service.SecuritySystem, name + " Motion Detection");
 
-    // Add HomeKit Motion Sensor Service
-    newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
+  // Add HomeKit Motion Sensor Service
+  newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
 
-    // Setup listeners for different events
-    self.setService(newAccessory, mac);
+  // Setup listeners for different events
+  self.setService(newAccessory, mac);
 
-    // Publish accessories to HomeKit
-    self.api.publishCameraAccessories("FoscamCamera", [newAccessory]);
+  // Publish accessories to HomeKit
+  self.api.publishCameraAccessories("FoscamCamera", [newAccessory]);
 
-    // Store accessory in cache
-    self.accessories[mac] = newAccessory;
+  // Store accessory in cache
+  self.accessories[mac] = newAccessory;
 
-    // Retrieve initial state
-    self.getInitState(newAccessory, thisCamera);
-  });
+  // Retrieve initial state
+  self.getInitState(newAccessory, thisCamera);
 }
 
 // Method to setup listeners for different events
