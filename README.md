@@ -1,5 +1,5 @@
 # homebridge-foscamcamera [![npm version](https://badge.fury.io/js/homebridge-foscamcamera.svg)](https://badge.fury.io/js/homebridge-foscamcamera)
-Foscam Plugin (Camera, Security System, Motion Sensor) for [HomeBridge](https://github.com/nfarina/homebridge) (API 2.1)
+Foscam Security Plugin (Security System + Motion Sensor) for [HomeBridge](https://github.com/nfarina/homebridge) (API 2.1)
 
 Older verion using API 1.0: [homebridge-foscam](https://github.com/rooi/homebridge-foscam)<br>
 Older verion using API 2.0: [homebridge-foscam2](https://github.com/luisiam/homebridge-foscam2) (deprecated)
