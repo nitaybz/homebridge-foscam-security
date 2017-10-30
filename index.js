@@ -118,7 +118,6 @@ FoscamPlatform.prototype.getInfo = function (cameraConfig, callback) {
       delete thisCamera.stay;
       delete thisCamera.away;
       delete thisCamera.night;
-      delete thisCamera.motionDetector;
 
       // Store camera information
       thisCamera.name = info.devName.toString();
@@ -150,30 +149,35 @@ FoscamPlatform.prototype.configureCamera = function (mac) {
   var self = this;
   var thisCamera = this.cameraInfo[mac];
   var name = "Foscam " + thisCamera.name;
-  var uuid = UUIDGen.generate(mac);
+  var uuid = UUIDGen.generate(mac + "security");
 
   this.log("Initializing platform accessory '" + name + "'...");
 
   // Setup for FoscamAccessory
-  var newAccessory = new Accessory(name, uuid);
+  //var cameraSource = new FoscamAccessory(hap, thisCamera, this.log);
+  //cameraSource.info().then(function () {
+    // Setup accessory as CAMERA (17) category
+    var newAccessory = new Accessory(name, uuid, 11);
+    //newAccessory.configureCameraSource(cameraSource);
 
-  // Add HomeKit Security System Service
-  newAccessory.addService(Service.SecuritySystem, name + " Security");
+    // Add HomeKit Security System Service
+    newAccessory.addService(Service.SecuritySystem, name + " Security");
 
-  // Add HomeKit Motion Sensor Service
-  newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
+    // Add HomeKit Motion Sensor Service
+    newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
 
-  // Setup listeners for different events
-  self.setService(newAccessory, mac);
+    // Setup listeners for different events
+    self.setService(newAccessory, mac);
 
-  // Publish accessories to HomeKit
-  self.api.publishCameraAccessories("FoscamCamera", [newAccessory]);
+    // Publish accessories to HomeKit
+    self.api.publishCameraAccessories("FoscamCamera", [newAccessory]);
 
-  // Store accessory in cache
-  self.accessories[mac] = newAccessory;
+    // Store accessory in cache
+    self.accessories[mac] = newAccessory;
 
-  // Retrieve initial state
-  self.getInitState(newAccessory, thisCamera);
+    // Retrieve initial state
+    self.getInitState(newAccessory, thisCamera);
+  //});
 }
 
 // Method to setup listeners for different events
