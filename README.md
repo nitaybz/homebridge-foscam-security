@@ -17,14 +17,14 @@ Currently, streaming only works on iOS 10.0. iOS 10.1+ enforces SRTP which is no
 
 # Installation
 1. Install homebridge using `npm install -g homebridge`.
-2. Install this plugin using `npm install -g homebridge-foscamcamera`.
+2. Install this plugin using `npm install -g homebridge-foscam-security`.
 3. Update your configuration file. See configuration sample below.
 
 # Configuration
 Edit your `config.json` accordingly. Configuration sample:
 ```
 "platforms": [{
-    "platform": "FoscamCamera",
+    "platform": "FoscamSecurity",
     "name": "Foscam",
     "cameras": [{
         "username": "admin",
@@ -43,11 +43,7 @@ Edit your `config.json` accordingly. Configuration sample:
         "away": 14,
         "night": 13,
         "sensitivity": 2,
-        "triggerInterval": 5,
-        "gain": 6,
-        "spkrEnable": true,
-        "spkrCompression": true,
-        "spkrGain": 1
+        "triggerInterval": 5
     }]
 }]
 
@@ -67,10 +63,6 @@ Edit your `config.json` accordingly. Configuration sample:
 | \|- night\*          | Configuration for Night Arm.                                  | 0             | No       |
 | \|- sensitivity      | Motion sensor sensitivity from 0 (lowest) to 4 (high).        | Camera Config | No       |
 | \|- triggerInterval  | Time in `s` (5-15) of which motion sensor can be retriggered. | Camera Config | No       |
-| \|- gain             | Gain in decibels to boost camera audio.                       | 0             | No       |
-| \|- spkrEnable       | Enable camera speaker.                                        | true          | No       |
-| \|- spkrCompression  | Enable audio compression.                                     | true          | No       |
-| \|- spkrGain         | Gain in decibels to boost speaker volume.                     | 0             | No       |
 
 \*`stay`, `away`, `night` define configuration for different ARMED state.
 
