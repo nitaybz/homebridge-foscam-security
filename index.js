@@ -34,10 +34,6 @@ function FoscamPlatform(log, config, api) {
   }
 }
 
-FoscamPlatform.prototype.configureAccessory = function (accessory) {
-  // Won't be invoked
-}
-
 // Method to setup accessories from config.json
 FoscamPlatform.prototype.didFinishLaunching = function () {
   var self = this;
@@ -146,7 +142,6 @@ FoscamPlatform.prototype.getInfo = function (cameraConfig, callback) {
 
 // Method to configure camera info for HomeKit
 FoscamPlatform.prototype.configureCamera = function (mac) {
-  var self = this;
   var thisCamera = this.cameraInfo[mac];
   var name = "Foscam " + thisCamera.name;
   var uuid = UUIDGen.generate(mac + "security");
@@ -154,30 +149,40 @@ FoscamPlatform.prototype.configureCamera = function (mac) {
   this.log("Initializing platform accessory '" + name + "'...");
 
   // Setup for FoscamAccessory
-  //var cameraSource = new FoscamAccessory(hap, thisCamera, this.log);
-  //cameraSource.info().then(function () {
-    // Setup accessory as CAMERA (17) category
-    var newAccessory = new Accessory(name, uuid, 11);
-    //newAccessory.configureCameraSource(cameraSource);
 
-    // Add HomeKit Security System Service
-    newAccessory.addService(Service.SecuritySystem, name + " Security");
+  // Setup accessory as CAMERA (17) category
+  var newAccessory = new Accessory(name, uuid, 11);
 
-    // Add HomeKit Motion Sensor Service
-    newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
+  newAccessory.context.mac = mac
 
-    // Setup listeners for different events
-    self.setService(newAccessory, mac);
+  // Add HomeKit Security System Service
+  newAccessory.addService(Service.SecuritySystem, name + " Security");
 
-    // Publish accessories to HomeKit
-    self.api.registerPlatformAccessories(name, 'FoscamSecurity', [newAccessory]);
+  // Add HomeKit Motion Sensor Service
+  newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
 
-    // Store accessory in cache
-    self.accessories[mac] = newAccessory;
+  // Setup listeners for different events
+  this.setService(newAccessory, mac);
 
-    // Retrieve initial state
-    self.getInitState(newAccessory, thisCamera);
-  //});
+  // Publish accessories to HomeKit
+  if (!this.accessories[mac]) {
+    this.api.registerPlatformAccessories("homebridge-foscam-security", 'FoscamSecurity', [newAccessory]);
+  }
+
+
+  // Store accessory in cache
+  this.accessories[mac] = newAccessory;
+
+  // Retrieve initial state
+  this.getInitState(newAccessory, thisCamera);
+}
+
+FoscamPlatform.prototype.configureAccessory = function (accessory) {
+  this.log('configureAccessory')
+  this.log(accessory)
+  this.accessories[accessory.context.mac] = accessory;
+
+  // Won't be invoked
 }
 
 // Method to setup listeners for different events
