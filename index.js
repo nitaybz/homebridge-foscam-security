@@ -8,7 +8,7 @@ module.exports = function (homebridge) {
   UUIDGen = homebridge.hap.uuid;
   hap = homebridge.hap;
 
-  homebridge.registerPlatform("homebridge-foscamcamera", "FoscamSecurity", FoscamPlatform, true);
+  homebridge.registerPlatform("homebridge-foscam-security", "FoscamSecurity", FoscamPlatform, true);
 }
 
 function FoscamPlatform(log, config, api) {
