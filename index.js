@@ -178,11 +178,7 @@ FoscamPlatform.prototype.configureCamera = function (mac) {
 }
 
 FoscamPlatform.prototype.configureAccessory = function (accessory) {
-  this.log('configureAccessory')
-  this.log(accessory)
   this.accessories[accessory.context.mac] = accessory;
-
-  // Won't be invoked
 }
 
 // Method to setup listeners for different events
