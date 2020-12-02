@@ -1,7 +1,7 @@
 {
   "name": "homebridge-foscam-security",
   "description": "Foscam Security Plugin for HomeBridge: https://github.com/nfarina/homebridge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/nitaybz/homebridge-foscam-security.git"
