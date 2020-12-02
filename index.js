@@ -278,11 +278,11 @@ FoscamPlatform.prototype.getCurrentState = function (mac, callback) {
 
       // Set motion sensor status active
       thisAccessory.getService(Service.MotionSensor)
-        .setCharacteristic(Characteristic.StatusActive, config.isEnable ? true : false);
+        .getCharacteristic(Characteristic.StatusActive).updateValue(config.isEnable ? true : false);
 
       // Set security system status fault
       thisAccessory.getService(Service.SecuritySystem)
-        .setCharacteristic(Characteristic.StatusFault, 0);
+        .getCharacteristic(Characteristic.StatusFault).updateValue(0);
 
       self.log(thisCamera.name + " is " + self.armState[thisCamera.currentState]);
       callback(null, thisCamera.currentState);
@@ -291,7 +291,7 @@ FoscamPlatform.prototype.getCurrentState = function (mac, callback) {
 
       // Set security system status fault to 1 in case of error
       thisAccessory.getService(Service.SecuritySystem)
-        .setCharacteristic(Characteristic.StatusFault, 1);
+        .getCharacteristic(Characteristic.StatusFault).updateValue(1);
 
       self.log(error);
       callback(new Error(error));
@@ -362,7 +362,7 @@ FoscamPlatform.prototype.setTargetState = function (mac, state, callback) {
 
       // Set status fault to 1 in case of error
       thisAccessory.getService(Service.SecuritySystem)
-        .setCharacteristic(Characteristic.StatusFault, 1);
+        .getCharacteristic(Characteristic.StatusFault).updateValue(1);
 
       self.log(error);
       callback(new Error(error));
@@ -414,13 +414,13 @@ FoscamPlatform.prototype.motionDetected = function (mac) {
     this.log(thisCamera.name + " Motion Detected!");
     thisCamera.motionAlarm = true;
     thisAccessory.getService(Service.MotionSensor)
-      .setCharacteristic(Characteristic.MotionDetected, thisCamera.motionAlarm);
+      .getCharacteristic(Characteristic.MotionDetected).updateValue(thisCamera.motionAlarm);
   }
 
   // Reset motion detected after trigger interval
   thisCamera.resetMotion = setTimeout(function () {
     thisCamera.motionAlarm = false;
     thisAccessory.getService(Service.MotionSensor)
-      .setCharacteristic(Characteristic.MotionDetected, thisCamera.motionAlarm);
+      .getCharacteristic(Characteristic.MotionDetected).updateValue(thisCamera.motionAlarm);
   }, (thisCamera.triggerInterval - 1) * 1000);
 }
