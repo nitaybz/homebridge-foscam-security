@@ -118,7 +118,8 @@ FoscamPlatform.prototype.getInfo = function (cameraConfig, callback) {
       // Store camera information
       thisCamera.name = info.devName.toString();
       thisCamera.model = info.productName.toString();
-      thisCamera.serial = info.serialNo.toString();
+      thisCamera.serial = 'SN_' + info.serialNo.toString();
+      console.log(thisCamera.serial)
       thisCamera.fw = info.firmwareVer.toString();
       thisCamera.hw = info.hardwareVer.toString();
 
@@ -161,20 +162,25 @@ FoscamPlatform.prototype.configureCamera = function (mac) {
   // Add HomeKit Motion Sensor Service
   newAccessory.addService(Service.MotionSensor, name + " Motion Sensor");
 
-  // Setup listeners for different events
-  this.setService(newAccessory, mac);
 
   // Publish accessories to HomeKit
   if (!this.accessories[mac]) {
+    // Setup listeners for different events
+    this.setService(newAccessory, mac);
     this.api.registerPlatformAccessories("homebridge-foscam-security", 'FoscamSecurity', [newAccessory]);
+    // Store accessory in cache
+    this.accessories[mac] = newAccessory;
+    // Retrieve initial state
+    this.getInitState(newAccessory, thisCamera);
+
+  } else {
+    this.setService(this.accessories[mac], mac);
+    // Retrieve initial state
+    this.getInitState(this.accessories[mac], thisCamera);
   }
 
 
-  // Store accessory in cache
-  this.accessories[mac] = newAccessory;
 
-  // Retrieve initial state
-  this.getInitState(newAccessory, thisCamera);
 }
 
 FoscamPlatform.prototype.configureAccessory = function (accessory) {
@@ -305,6 +311,7 @@ FoscamPlatform.prototype.getTargetState = function (mac, callback) {
 // Method to set the security system target state
 FoscamPlatform.prototype.setTargetState = function (mac, state, callback) {
   var self = this;
+  console.log(`Setting target state to ${mac}: ${state}`)
   var thisFoscamAPI = this.foscamAPI[mac];
   var thisCamera = this.cameraInfo[mac];
   var thisAccessory = this.accessories[mac];
@@ -334,22 +341,22 @@ FoscamPlatform.prototype.setTargetState = function (mac, state, callback) {
 
       // Set motion sensor status
       thisAccessory.getService(Service.MotionSensor)
-        .setCharacteristic(Characteristic.StatusActive, enable ? true : false);
+        .getCharacteristic(Characteristic.StatusActive).updateValue(enable ? true : false);
 
       // Set security system current state
       thisCamera.currentState = state;
       thisAccessory.getService(Service.SecuritySystem)
-        .setCharacteristic(Characteristic.SecuritySystemCurrentState, state);
+        .getCharacteristic(Characteristic.SecuritySystemCurrentState).updateValue(state);
 
       // Configure motion polling
       self.startMotionPolling(mac);
 
       // Set status fault
       thisAccessory.getService(Service.SecuritySystem)
-        .setCharacteristic(Characteristic.StatusFault, 0);
+        .getCharacteristic(Characteristic.StatusFault).updateValue(0);
 
       self.log(thisCamera.name + " is set to " + self.armState[state]);
-      callback(null);
+      callback();
     } else {
       var error = "Failed to set " + thisCamera.name + " state!";
 

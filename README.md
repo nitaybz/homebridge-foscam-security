@@ -1,11 +1,12 @@
-# homebridge-foscamcamera [![npm version](https://badge.fury.io/js/homebridge-foscamcamera.svg)](https://badge.fury.io/js/homebridge-foscamcamera)
-Foscam Security Plugin (Security System + Motion Sensor) for [HomeBridge](https://github.com/nfarina/homebridge) (API 2.1)
 
-Older verion using API 1.0: [homebridge-foscam](https://github.com/rooi/homebridge-foscam)<br>
-Older verion using API 2.0: [homebridge-foscam2](https://github.com/luisiam/homebridge-foscam2) (deprecated)
+fork of homebridge-foscamcamera
+# homebridge-foscam-security
 
-**Due to protocol limitation, users will need to pair with the camera in a HomeKit app separately.<br>**
-**Pairing PIN is the same as the HomeBridge pairing PIN.**
+[![Downloads](https://img.shields.io/npm/dt/homebridge-foscam-security.svg?color=critical)](https://www.npmjs.com/package/homebridge-foscam-security)
+[![Version](https://img.shields.io/npm/v/homebridge-foscam-security)](https://www.npmjs.com/package/homebridge-foscam-security)<br>
+
+
+\* Only exposing security and motion accessories to complete the homebridge-camera-ffmpeg plugin
 
 # Important Notice
 Currently, streaming only works on iOS 10.0. iOS 10.1+ enforces SRTP which is not implemented in the current streaming library. In addition, Foscam C1 streaming will not even work on iOS 10.0 due to funky firmware. Other than streaming, all the other functionalities should work as expected.
